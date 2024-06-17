@@ -27,4 +27,22 @@ class VehiculeController
 
         require_once "./view/ajout_vehicule.html";
     }
+
+    public function getById($id)
+    {
+        $vehicule = new Vehicule();
+        return $vehicule->getById($id);
+    }
+
+    public function update($id, $donnees)
+    {
+        $vehicule = new Vehicule();
+        return $vehicule->update($id, $donnees);
+    }
+
+    public function delete($id)
+    {
+        $vehicule = new Vehicule();
+        return $vehicule->delete($id);
+    }
 }

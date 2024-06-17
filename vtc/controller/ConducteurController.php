@@ -24,4 +24,23 @@ class ConducteurController
 
         require_once "./view/ajout_conducteur.html";
     }
+
+
+    public function getById($id)
+    {
+        $conducteur = new Conducteur();
+        return $conducteur->getById($id);
+    }
+
+    public function update($id, $donnees)
+    {
+        $conducteur = new Conducteur();
+        return $conducteur->update($id, $donnees);
+    }
+
+    public function delete($id)
+    {
+        $conducteur = new Conducteur();
+        return $conducteur->delete($id);
+    }
 }

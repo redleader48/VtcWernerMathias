@@ -1,38 +1,37 @@
 <?php
-require_once './model/Connection.php';
+require_once './model/Association.php';
 
-class AssociationController extends Connection
+class AssociationController
 {
+    private $association;
+
+    public function __construct()
+    {
+        $this->association = new Association();
+    }
 
     public function setAssociation($idConducteur, $idVehicule)
     {
-        $db = Connection::getConnect();
-        $sql = $db->prepare("INSERT INTO association_vehicule_conducteur (id_conducteur, id_vehicule, date_association) VALUES (:idConducteur, :idVehicule, CURDATE())");
-        $sql->bindParam(':idConducteur', $idConducteur);
-        $sql->bindParam(':idVehicule', $idVehicule);
-        return $sql->execute();
+        return $this->association->setAssociation($idConducteur, $idVehicule);
     }
 
     public function read()
     {
-        $db = Connection::getConnect();
-        $sql = $db->prepare("
-        SELECT 
-        avc.id AS association_id,
-        c.prenom,
-        c.nom,
-        c.id AS conducteur_id,
-        v.modele,
-        v.marque,
-        v.id AS vehicule_id
-        FROM 
-            association_vehicule_conducteur avc
-        JOIN 
-            conducteur c ON avc.id_conducteur = c.id
-        JOIN 
-            vehicule v ON avc.id_vehicule = v.id;
-        ");
-        $sql->execute();
-        return $sql->fetchAll(PDO::FETCH_ASSOC);
+        return $this->association->read();
+    }
+
+    public function getAssociationById($id)
+    {
+        return $this->association->getAssociationById($id);
+    }
+
+    public function updateAssociation($id, $idConducteur, $idVehicule)
+    {
+        return $this->association->updateAssociation($id, $idConducteur, $idVehicule);
+    }
+
+    public function delete($id)
+    {
+        return $this->association->delete($id);
     }
 }

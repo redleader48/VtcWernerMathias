@@ -53,4 +53,48 @@ class Conducteur extends Connection implements iCRUD
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getById($id)
+    {
+        $db = Connection::getConnect();
+        $sql = $db->prepare("SELECT * FROM conducteur WHERE id = :id");
+        $sql->bindParam(':id', $id);
+        $sql->execute();
+        return $sql->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function update($id, $donnees)
+    {
+        $db = Connection::getConnect();
+        $setClause = "";
+        foreach ($donnees as $key => $value) {
+            $setClause .= "$key = '$value', ";
+        }
+        $setClause = rtrim($setClause, ', ');
+
+        $sql = $db->prepare("UPDATE conducteur SET $setClause WHERE id = :id");
+        $sql->bindParam(':id', $id);
+        return $sql->execute();
+    }
+
+    public function delete($id)
+    {
+        $db = Connection::getConnect();
+        $sql = $db->prepare("DELETE FROM conducteur WHERE id = :id");
+        $sql->bindParam(':id', $id);
+        return $sql->execute();
+    }
+    public function getConducteursSansVehicule()
+    {
+        $db = Connection::getConnect();
+        $sql = $db->prepare("
+            SELECT * FROM conducteur c
+            WHERE NOT EXISTS (
+                SELECT 1 FROM association_vehicule_conducteur avc
+                WHERE avc.id_conducteur = c.id
+            )
+        ");
+        $sql->execute();
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
