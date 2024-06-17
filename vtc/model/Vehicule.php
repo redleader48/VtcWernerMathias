@@ -7,7 +7,7 @@ class Vehicule extends Connection implements iCRUD
 {
 
     private $marque;
-    private $modele;
+    private $model;
     private $couleur;
     private $immatriculation;
 
@@ -15,9 +15,9 @@ class Vehicule extends Connection implements iCRUD
     {
         return $this->marque;
     }
-    public function getModele()
+    public function getModel()
     {
-        return $this->modele;
+        return $this->model;
     }
     public function getCouleur()
     {
@@ -32,9 +32,9 @@ class Vehicule extends Connection implements iCRUD
     {
         return $this->marque = $marque;
     }
-    public function setModele($modele)
+    public function setModel($model)
     {
-        return $this->modele = $modele;
+        return $this->model = $model;
     }
     public function setCouleur($couleur)
     {
@@ -68,6 +68,50 @@ class Vehicule extends Connection implements iCRUD
     {
         $db = Connection::getConnect();
         $sql = $db->prepare("SELECT * FROM vehicule ORDER BY id");
+        $sql->execute();
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getById($id)
+    {
+        $db = Connection::getConnect();
+        $sql = $db->prepare("SELECT * FROM vehicule WHERE id = :id");
+        $sql->bindParam(':id', $id);
+        $sql->execute();
+        return $sql->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function update($id, $donnees)
+    {
+        $db = Connection::getConnect();
+        $setClause = "";
+        foreach ($donnees as $key => $value) {
+            $setClause .= "$key = '$value', ";
+        }
+        $setClause = rtrim($setClause, ', ');
+
+        $sql = $db->prepare("UPDATE vehicule SET $setClause WHERE id = :id");
+        $sql->bindParam(':id', $id);
+        return $sql->execute();
+    }
+
+    public function delete($id)
+    {
+        $db = Connection::getConnect();
+        $sql = $db->prepare("DELETE FROM vehicule WHERE id = :id");
+        $sql->bindParam(':id', $id);
+        return $sql->execute();
+    }
+    public function getVehiculesSansConducteur()
+    {
+        $db = Connection::getConnect();
+        $sql = $db->prepare("
+            SELECT * FROM vehicule v
+            WHERE NOT EXISTS (
+                SELECT 1 FROM association_vehicule_conducteur avc
+                WHERE avc.id_vehicule = v.id
+            )
+        ");
         $sql->execute();
         return $sql->fetchAll(PDO::FETCH_ASSOC);
     }

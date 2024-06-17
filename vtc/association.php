@@ -23,14 +23,15 @@ $data = $associationController->read();
 
 if (!empty($data)) {
     echo '<div class="container"><table class="table table-bordered">';
-    echo '<tr><th scope="col">id_association</th><th scope="col">Conducteur</th><th scope="col">vehicule</th><th scope="col">Editer</th></tr>';
+    echo '<tr><th scope="col">id_association</th><th scope="col">Conducteur</th><th scope="col">Vehicule</th><th scope="col">Editer</th><th scope="col">Supprimer</th></tr>';
 
     foreach ($data as $row) {
         echo '<tr>';
-        echo '<td>' . $row['association_id'] . '</td>';
-        echo '<td>' . $row['nom'] . ' ' . $row['prenom'] . '<br/>' . $row['conducteur_id'] . '</td>';
-        echo '<td>' . $row['marque'] . ' ' . $row['modele'] . '<br/>' . $row['vehicule_id'] . '</td>';
-        echo '<td><a href="../view/showConducteur.php?&id=' . $row['association_id'] . '">Editer</a></td>';
+        echo '<td>' . htmlspecialchars($row['association_id']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['nom']) . ' ' . htmlspecialchars($row['prenom']) . '<br/>' . htmlspecialchars($row['conducteur_id']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['marque']) . ' ' . htmlspecialchars($row['model']) . '<br/>' . htmlspecialchars($row['vehicule_id']) . '</td>';
+        echo '<td><a href="associationEdit.php?id=' . $row['association_id'] . '"class="btn btn-light">Editer</a></td>';
+        echo '<td><a href="associationDelete.php?id=' . $row['association_id'] . '" class="btn btn-danger">Supprimer</a></td>';
         echo '</tr>';
     }
 
@@ -39,6 +40,7 @@ if (!empty($data)) {
     echo 'Aucune donnée trouvée.';
 }
 ?>
+
 <div class="container">
     <div class="mb-3">
         <form method="POST">
@@ -48,7 +50,7 @@ if (!empty($data)) {
                 $query = "SELECT id, nom FROM conducteur";
                 $sql = (new Connection())->getConnect()->query($query);
                 while ($data = $sql->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<option value='" . $data['id'] . "'>" . $data['nom'] . "</option>";
+                    echo "<option value='" . htmlspecialchars($data['id']) . "'>" . htmlspecialchars($data['nom']) . "</option>";
                 }
                 ?>
             </select>
@@ -60,10 +62,11 @@ if (!empty($data)) {
             $query = "SELECT id, immatriculation FROM vehicule";
             $sql = (new Connection())->getConnect()->query($query);
             while ($data = $sql->fetch(PDO::FETCH_ASSOC)) {
-                echo "<option value='" . $data['id'] . "'>" . $data['immatriculation'] . "</option>";
+                echo "<option value='" . htmlspecialchars($data['id']) . "'>" . htmlspecialchars($data['immatriculation']) . "</option>";
             }
             ?>
         </select>
     </div>
     <input type="submit" name="submit" value="Valider" class="btn btn-light">
     </form>
+</div>
